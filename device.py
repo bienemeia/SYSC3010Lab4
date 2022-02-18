@@ -24,6 +24,9 @@ def led_stream_handler(message):
                 message['data'][2],
                 )
             logger.debug(f"Received update for led: {message}")
+#            
+#def clear_leds(device_id):
+#    sense.clear(0,0,0)
 
 def main():
     #initialize the db with configuration and user data
@@ -39,9 +42,13 @@ def main():
         .child('leds') \
         .stream(led_stream_handler)
 
-    # to be implemented by students
-    def clear_leds():
-        raise NotImplementedError("clear_leds should be implemented by students.")
+    # Continuously check for joystick movement
+    while True:
+        for event in sense.stick.get_events():
+            device_id = backend.get_device_id()
+            if event.direction == 'down':
+                backend.clear_leds(device_id)
+
 
 if __name__ == '__main__':
     main()
